@@ -54,11 +54,11 @@ Run `vendor/bin/cigar` to have it check each of the URLs return the status code 
 Run `docker run -v $(pwd):/app --rm brunty/cigar` to have it check each of the URLs return the status code expected.
 
 ```
-> vendor/bin/cigar                                           
+> vendor/bin/cigar
 ✓ http://httpbin.org/status/418 [418:418] teapot
-✓ http://httpbin.org/status/200 [200:200] [text/html:text/html] 
-✓ http://httpbin.org/status/304 [304:304] 
-✓ http://httpbin.org/status/500 [500:500] 
+✓ http://httpbin.org/status/200 [200:200] [text/html:text/html]
+✓ http://httpbin.org/status/304 [304:304]
+✓ http://httpbin.org/status/500 [500:500]
 ```
 
 The format of the lines in the output is:
@@ -79,7 +79,7 @@ If you wish to use an alternative configuration file, use the `vendor/bin/cigar 
 
 ### Passing a base URL to check against
 
-If you wish to check a file of URLs relative to the root of a site against a base URL, you can do so with by using 
+If you wish to check a file of URLs relative to the root of a site against a base URL, you can do so with by using
 `vendor/bin/cigar -u http://httpbin.org` or `vendor/bin/cigar --url=http://httpbin.org`
 
 Your configuration file can then contain URLs including:
@@ -105,7 +105,7 @@ Your configuration file can then contain URLs including:
     "status": 418,
     "content": "teapot"
   },
-  
+
   {
     "url": "status/418",
     "status": 418,
@@ -116,14 +116,19 @@ Your configuration file can then contain URLs including:
 
 ### Disabling SSL cert verification
 
-If you wish to run the tool without checking SSL certs, use the `-i` or `--insecure` option to the command: 
+If you wish to run the tool without checking SSL certs, use the `-i` or `--insecure` option to the command:
 `vendor/bin/cigar -i` or `vendor/bin/cigar --insecure`
 
 **Only use this if absolutely necessary.**
 
+### Following redirects
+
+If you wish to follow redirects, use the `-r` or `--follow-redirects` option in the command:
+`vendor/bin/cigar -r` or `vendor/bin/cigar --follow-redirects`
+
 ### Passing Authorization header
 
-If you wish to add the Authorization header, use the `-a` or `--auth` option to the command: 
+If you wish to add the Authorization header, use the `-a` or `--auth` option to the command:
 `vendor/bin/cigar -a "Basic dXNyOnBzd2Q="` or `vendor/bin/cigar --auth="Basic dXNyOnBzd2Q="`
 
 ### Passing custom header

@@ -11,6 +11,11 @@ class AsyncChecker
     private $checkSsl;
 
     /**
+     * @var bool
+     */
+    private $followRedirects;
+
+    /**
      * @var string
      */
     private $authorizationHeader;
@@ -20,9 +25,10 @@ class AsyncChecker
      */
     private $headers;
 
-    public function __construct(bool $checkSsl = true, string $authorizationHeader = null, array $headers = [])
+    public function __construct(bool $checkSsl = true, bool $followRedirects = false, string $authorizationHeader = null, array $headers = [])
     {
         $this->checkSsl = $checkSsl;
+        $this->followRedirects = $followRedirects;
         $this->authorizationHeader = $authorizationHeader;
         $this->headers = $headers;
     }
@@ -47,6 +53,10 @@ class AsyncChecker
             if ( ! $this->checkSsl) {
                 curl_setopt($channel, CURLOPT_SSL_VERIFYPEER, 0);
                 curl_setopt($channel, CURLOPT_SSL_VERIFYHOST, 0);
+            }
+
+            if ($this->followRedirects) {
+                curl_setopt($channel, CURLOPT_FOLLOWLOCATION, 1);
             }
 
             if ($this->authorizationHeader) {

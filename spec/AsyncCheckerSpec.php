@@ -63,6 +63,36 @@ describe('AsyncChecker', function () {
         });
     });
 
+    context('when redirects should not be followed', function () {
+        it('returns redirect status code', function () {
+            $domain = new Url('https://httpbin.org/redirect-to?url=https://httpbin.org/status/200&status_code=301', 200);
+            $domains = [$domain];
+
+            $results = (new AsyncChecker())->check($domains);
+
+            $expected = [
+                new Result($domain, 301),
+            ];
+
+            expect($results[0]->getStatusCode())->toEqual($expected[0]->getStatusCode());
+        });
+    });
+
+    context('when redirects should be followed', function () {
+        it('returns redirect status code', function () {
+            $domain = new Url('https://httpbin.org/redirect-to?status_code=301&url=https://httpbin.org/status/200', 200);
+            $domains = [$domain];
+
+            $results = (new AsyncChecker(true, true))->check($domains);
+
+            $expected = [
+                new Result($domain, 200),
+            ];
+
+            expect($results[0]->getStatusCode())->toEqual($expected[0]->getStatusCode());
+        });
+    });
+
     context('when timeouts are set', function () {
         it('checks a URL that will timeout', function () {
             // Need to change for a better setup URL that doesn't default to a potentially unknown site

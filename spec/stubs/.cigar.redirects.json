@@ -1,0 +1,22 @@
+[
+  {
+    "url": "https://httpbin.org/redirect-to?status_code=301&url=https://httpbin.org/status/200",
+    "status": 200
+  },
+  {
+    "url": "https://httpbin.org/redirect-to?status_code=302&url=https://httpbin.org/status/200",
+    "status": 200
+  },
+  {
+    "url": "https://httpbin.org/redirect-to?status_code=303&url=https://httpbin.org/status/200",
+    "status": 200
+  },
+  {
+    "url": "https://httpbin.org/redirect-to?status_code=307&url=https://httpbin.org/status/200",
+    "status": 200
+  },
+  {
+    "url": "https://httpbin.org/redirect-to?status_code=308&url=https://httpbin.org/status/200",
+    "status": 200
+  }
+]

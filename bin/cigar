@@ -18,7 +18,7 @@ use Brunty\Cigar\Outputter;
 use Brunty\Cigar\Parser;
 use Brunty\Cigar\Result;
 
-$options = getopt('c:ia:u:jh:t:s:', ['version', 'help', 'quiet', 'config:', 'insecure', 'auth:', 'url:', 'json', 'header:', 'timeout:', 'connect-timeout:']);
+$options = getopt('c:ira:u:jh:t:s:', ['version', 'help', 'quiet', 'config:', 'insecure', 'follow-redirects', 'auth:', 'url:', 'json', 'header:', 'timeout:', 'connect-timeout:']);
 
 if (isset($options['help'])) {
     $content = <<<HELP
@@ -28,16 +28,17 @@ if (isset($options['help'])) {
 
 
 \033[33mOptions:\033[0m
-      \033[32m-c file.json, --config=file.json\033[0m         Use the specified config file instead of the default .cigar.json file 
+      \033[32m-c file.json, --config=file.json\033[0m         Use the specified config file instead of the default .cigar.json file
       \033[32m-u URL,       --url=URL\033[0m                  Base URL for checks, e.g. https://example.org/
       \033[32m-i,           --insecure\033[0m                 Allow invalid SSL certificates
+      \033[32m-r,           --follow-redirects\033[0m         Follow redirects
       \033[32m-a,           --auth\033[0m                     Authorization header "\074type\076 \074credentials\076"
       \033[32m-h,           --header\033[0m                   Custom header "\074name\076: \074value\076"
       \033[32m-s            --connect-timeout=TIMEOUT\033[0m  Connect Timeout
       \033[32m-t,           --timeout=TIMEOUT\033[0m          Timeout
       \033[32m-j,           --json\033[0m                     Output JSON
       \033[32m              --quiet\033[0m                    Do not output any message
-      \033[32m              --version\033[0m                  Print the version of Cigar 
+      \033[32m              --version\033[0m                  Print the version of Cigar
 
 Created by Matt Brunt
 E: matt@mfyu.co.uk
@@ -52,14 +53,14 @@ HELP;
 if (isset($options['version'])) {
     $version = CIGAR_VERSION;
     $content = <<<VERSION
-  ____ ___ ____    _    ____  
- / ___|_ _/ ___|  / \  |  _ \ 
+  ____ ___ ____    _    ____
+ / ___|_ _/ ___|  / \  |  _ \
 | |    | | |  _  / _ \ | |_) |
-| |___ | | |_| |/ ___ \|  _ < 
+| |___ | | |_| |/ ___ \|  _ <
  \____|___\____/_/   \_\_| \_\
 
 \033[0;90;49mThe simple smoke testing tool.\033[0m
- 
+
 Version \033[36m{$version}\033[0m
 
 For additional help use \033[36m--help\033[0m
@@ -82,6 +83,7 @@ if ( ! file_exists($file)) {
 }
 
 $secure = ! (isset($options['i']) || isset($options['insecure']));
+$followRedirects = (isset($options['r']) || isset($options['follow-redirects']));
 $authorization = $options['a'] ?? $options['auth'] ?? null;
 $headers = (array) ($options['h'] ?? $options['header'] ?? []);
 $connectTimeout = $options['s'] ?? $options['connect-timeout'] ?? null;
@@ -94,7 +96,7 @@ try {
     exit(1);
 }
 
-$results = (new AsyncChecker($secure, $authorization, $headers))->check($domains);
+$results = (new AsyncChecker($secure, $followRedirects, $authorization, $headers))->check($domains);
 $passedResults = array_filter($results, function (Result $result) {
     return $result->hasPassed();
 });
